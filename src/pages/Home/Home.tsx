@@ -56,19 +56,24 @@ function Home () {
                     <span className="text-sm font-medium text-center">Đặt khám bác sĩ</span>
                 </a>
 
-                <div className="flex flex-col items-center group cursor-pointer">
+                {/* <div className="flex flex-col items-center group cursor-pointer">
                 <div className="w-16 h-16 bg-green-50 dark:bg-green-900/30 rounded-2xl flex items-center justify-center text-green-500 mb-3 group-hover:scale-110 transition-transform">
                     <span className="material-icons-round text-3xl">meeting_room</span>
                 </div>
                 <span className="text-sm font-medium text-center">Phòng khám</span>
+                </div> */}
+                <a className="flex flex-col items-center group cursor-pointer" href="/doctor">
+                <div className="w-16 h-16 bg-green-50 dark:bg-green-900/30 rounded-2xl flex items-center justify-center text-green-500 mb-3 group-hover:scale-110 transition-transform">
+                    <span className="material-icons-round text-3xl">medical_services</span>
                 </div>
-
-                <div className="flex flex-col items-center group cursor-pointer">
+                <span className="text-sm font-medium text-center">Bác sĩ</span>
+                </a>
+                <a className="flex flex-col items-center group cursor-pointer" href="/hospital">
                 <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center text-indigo-500 mb-3 group-hover:scale-110 transition-transform">
                     <span className="material-icons-round text-3xl">domain</span>
                 </div>
                 <span className="text-sm font-medium text-center">Bệnh viện</span>
-                </div>
+                </a>
 
                 <div className="flex flex-col items-center group cursor-pointer">
                 <div className="w-16 h-16 bg-purple-50 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center text-purple-500 mb-3 group-hover:scale-110 transition-transform">

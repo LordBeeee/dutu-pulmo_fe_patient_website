@@ -18,6 +18,8 @@ import AppointmentSchedule from './pages/Appointment-Schedule/Appointment-Schedu
 import AppointmentScheduleDetail from './pages/Appointment-Schedule/Appointment-Schedule-Detail'
 import Doctor from './pages/Doctor/Doctor'
 import DoctorDetail from './pages/Doctor/Doctor-detail'
+import Hospital from './pages/Hospital/Hospital'
+import HospitalDetail from './pages/Hospital/Hospital-detail'
 function App() {
 
   useEffect(() => {
@@ -46,6 +48,8 @@ function App() {
           <Route path="/appointment-schedule/:id" element={<AppointmentScheduleDetail />} />
           <Route path="/doctor" element={<Doctor />} />
           <Route path="/doctor/:id" element={<DoctorDetail />} />
+          <Route path="/hospital" element={<Hospital />} />
+          <Route path="/hospital/:id" element={<HospitalDetail />} />
         </Route>
 
       </Routes>

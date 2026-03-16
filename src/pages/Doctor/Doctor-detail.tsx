@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import DoctorBreadcrumb from "../../components/Doctor/Doctor-detail/DoctorBreadcrumb";
 import DoctorInfoSections from "../../components/Doctor/Doctor-detail/DoctorInfoSections";
 import DoctorMainCard from "../../components/Doctor/Doctor-detail/DoctorMainCard";
-import DoctorSidebar from "../../components/Doctor/Doctor-detail/DoctorSidebar";
+// import DoctorSidebar from "../../components/Doctor/Doctor-detail/DoctorSidebar";
 import { getPublicDoctorDetail } from "../../services/doctor";
 import type { DoctorDetail as DoctorDetailType } from "../../types/doctor";
 
@@ -65,13 +65,13 @@ function DoctorDetail() {
       <DoctorBreadcrumb doctorName={doctor.fullName || "Chưa cập nhật"} />
 
       <main className="max-w-7xl mx-auto px-4 pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1  gap-8">
           <div className="lg:col-span-2 space-y-6">
             <DoctorMainCard doctor={doctor} />
             <DoctorInfoSections doctor={doctor} />
           </div>
 
-          <DoctorSidebar doctor={doctor} />
+          {/* <DoctorSidebar doctor={doctor} /> */}
         </div>
       </main>
     </>
