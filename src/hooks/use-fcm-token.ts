@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
-import { onMessageListener, requestForToken } from '@/config/firebase';
-import { authService } from '@/services/auth.service';
+import { onMessageListener, requestForToken } from "@/config/firebase";
+import { authService } from "@/services/auth.service";
 
 export const useFcmToken = (isAuthenticated: boolean) => {
   const [fcmToken, setFcmToken] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -20,7 +22,7 @@ export const useFcmToken = (isAuthenticated: boolean) => {
           await authService.addFcmToken(token);
         }
       } catch (error) {
-        console.error('Failed to fetch FCM token:', error);
+        console.error("Failed to fetch FCM token:", error);
       }
     };
 
@@ -38,21 +40,26 @@ export const useFcmToken = (isAuthenticated: boolean) => {
       onMessageListener()
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((payload: any) => {
-          console.log('Received foreground message:', payload);
+          console.log("Received foreground message:", payload);
           const notificationData = payload.notification || payload.data;
-          
+
           if (notificationData) {
-            toast(notificationData.title || 'Thông báo mới', {
+            toast(notificationData.title || "Thông báo mới", {
               description: notificationData.body || notificationData.content,
+            });
+
+            queryClient.invalidateQueries({
+              queryKey: ["notifications"],
+              refetchType: "all",
             });
           }
           listenToMessage();
         })
-        .catch((err: any) => console.log('failed: ', err));
+        .catch((err: any) => console.log("failed: ", err));
     };
 
     listenToMessage();
-  }, [fcmToken]);
+  }, [fcmToken, queryClient]);
 
   return { fcmToken };
 };

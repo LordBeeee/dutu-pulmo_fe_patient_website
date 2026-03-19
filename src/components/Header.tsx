@@ -1,9 +1,10 @@
-﻿import { Link } from 'react-router-dom';
-
+import { Link } from 'react-router-dom';
 import { useAuthStore } from '@/store/auth.store';
+import { useNotificationUnreadCount } from '@/hooks/use-notifications';
 
 function Header() {
   const user = useAuthStore((state) => state.user);
+  const { data: unreadCount } = useNotificationUnreadCount();
 
   const fullName = user?.fullName || 'Người dùng';
   const avatarUrl = user?.avatarUrl || '/src/assets/default-avatar.png';
@@ -59,10 +60,17 @@ function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          <button className="relative p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+          <Link 
+            to="/notifications"
+            className="relative p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors flex items-center justify-center"
+          >
             <span className="material-icons-round">notifications</span>
-            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 border-2 border-white dark:border-slate-900 rounded-full"></span>
-          </button>
+            {!!unreadCount && Number(unreadCount) > 0 && (
+              <span className="absolute top-1 right-1 min-w-[18px] h-[18px] bg-red-600 border-2 border-white dark:border-slate-900 rounded-full flex items-center justify-center text-[10px] font-bold text-white px-1 shadow-sm z-10 animate-in zoom-in duration-300">
+                {Number(unreadCount) > 99 ? '99+' : String(unreadCount)}
+              </span>
+            )}
+          </Link>
 
           <Link
             to="/profile"
