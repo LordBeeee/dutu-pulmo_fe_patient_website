@@ -257,35 +257,119 @@ function Profile() {
           </div>
 
           <nav className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden p-2 transition-colors">
-            <ul className="space-y-1">
-              <li>
-                <Link
-                  to="/my-reviews"
-                  className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
-                >
-                  <span className="material-symbols-outlined text-[20px]">rate_review</span>
-                  <span className="text-sm">Đánh giá của tôi</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/favorites"
-                  className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
-                >
-                  <span className="material-symbols-outlined text-[20px]">favorite</span>
-                  <span className="text-sm">Danh sách yêu thích</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/reports"
-                  className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
-                >
-                  <span className="material-symbols-outlined text-[20px]">flag</span>
-                  <span className="text-sm">Báo cáo của tôi</span>
-                </Link>
-              </li>
-              <li className="pt-4 border-t mt-4 border-slate-100 dark:border-slate-800">
+            <div className="space-y-4">
+              {/* HỒ SƠ Y TẾ */}
+              <div>
+                <h3 className="px-4 py-2 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Hồ sơ y tế</h3>
+                <ul className="space-y-1">
+                  <li>
+                    <Link
+                      to="/medical-records"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">folder_open</span>
+                      <span className="text-sm">Hồ sơ y tế</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/prescriptions"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">medication</span>
+                      <span className="text-sm">Đơn thuốc</span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* TIỆN ÍCH */}
+              <div>
+                <h3 className="px-4 py-2 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Tiện ích</h3>
+                <ul className="space-y-1">
+                  <li>
+                    <Link
+                      to="/favorites"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">favorite</span>
+                      <span className="text-sm">Danh sách yêu thích</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/my-reviews"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">rate_review</span>
+                      <span className="text-sm">Đánh giá của tôi</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/appointment-schedule"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">calendar_today</span>
+                      <span className="text-sm">Lịch khám</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/chat"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">chat_bubble</span>
+                      <span className="text-sm">Tin nhắn</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/notifications"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">notifications</span>
+                      <span className="text-sm">Thông báo</span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* HỖ TRỢ */}
+              <div>
+                <h3 className="px-4 py-2 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Hỗ trợ</h3>
+                <ul className="space-y-1">
+                  <li>
+                    <Link
+                      to="/reports"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">flag</span>
+                      <span className="text-sm">Báo cáo của tôi</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/reports/new"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">report_problem</span>
+                      <span className="text-sm">Gửi báo cáo</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/settings"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">settings</span>
+                      <span className="text-sm">Cài đặt</span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800 mt-2">
                 <button
                   onClick={() => setShowLogoutModal(true)}
                   className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors font-medium"
@@ -293,8 +377,8 @@ function Profile() {
                   <span className="material-icons-outlined text-[20px]">logout</span>
                   <span className="text-sm">Đăng xuất</span>
                 </button>
-              </li>
-            </ul>
+              </div>
+            </div>
           </nav>
         </aside>
 
