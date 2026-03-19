@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import FavoriteButton from '@/components/ui/FavoriteButton';
 import { getSpecialtyConfig } from '@/components/home/SpecialtyConfig';
@@ -10,6 +11,7 @@ interface DoctorMainCardProps {
 }
 
 function DoctorMainCard({ doctor }: DoctorMainCardProps) {
+  const navigate = useNavigate();
   const doctorName = doctor.fullName || 'Chưa cập nhật';
   const doctorTitle = doctor.title || 'Bác sĩ';
   const specialtyConfig = getSpecialtyConfig(doctor.specialty || '');
@@ -112,6 +114,23 @@ function DoctorMainCard({ doctor }: DoctorMainCardProps) {
             ) : null}
 
             <span className="text-sm text-slate-500 italic">Hồ sơ bác sĩ công khai</span>
+          </div>
+
+          <div className="mt-8 flex flex-wrap gap-4">
+            <button
+              onClick={() => navigate(`/chat?doctorId=${doctor.id}`)}
+              className="flex items-center gap-2 bg-slate-900 text-white px-8 py-3 rounded-xl hover:opacity-90 transition font-bold shadow-lg shadow-slate-200"
+            >
+              <span className="material-symbols-outlined">chat</span>
+              Nhắn tin ngay
+            </button>
+            <button
+               onClick={() => navigate('/appointment', { state: { doctorId: doctor.id } })}
+               className="flex items-center gap-2 bg-primary text-white px-8 py-3 rounded-xl hover:opacity-90 transition font-bold shadow-lg shadow-primary/20"
+            >
+              <span className="material-symbols-outlined">event_available</span>
+              Đặt lịch khám
+            </button>
           </div>
         </div>
       </div>

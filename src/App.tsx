@@ -12,7 +12,6 @@ import AppointmentSchedule from '@/pages/Appointment-Schedule/Appointment-Schedu
 import AppointmentScheduleDetail from '@/pages/Appointment-Schedule/Appointment-Schedule-Detail'
 import ChangePasswordPage from '@/pages/Change-password/ChangePassword'
 import ChatPage from '@/pages/Chat/Chat'
-import ChatRoomPage from '@/pages/Chat/ChatRoom'
 import Doctor from '@/pages/Doctor/Doctor'
 import DoctorDetail from '@/pages/Doctor/Doctor-detail'
 import EditProfilePage from '@/pages/Edit-profile/EditProfile'
@@ -96,7 +95,7 @@ function App() {
             <Route path="/doctor" element={<Doctor />} />
             <Route path="/doctor/:id" element={<DoctorDetail />} />
             <Route path="/chat" element={<ChatPage />} />
-            <Route path="/chat/:chatroomId" element={<ChatRoomPage />} />
+            <Route path="/chat/:chatroomId" element={<ChatPage />} />
             <Route path="/support" element={<SupportPage />} />
             <Route path="/news" element={<NewsPage />} />
             <Route path="/news/:id" element={<NewsDetail />} />

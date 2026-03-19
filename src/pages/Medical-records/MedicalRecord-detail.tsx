@@ -176,7 +176,7 @@ export default function MedicalRecordDetailPage() {
             </a>
           )}
           <Link
-            to={`/doctor?specialty=${record.doctor?.specialty || ''}&doctorId=${record.doctor?.id || ''}`}
+            to={`/doctor/${record.doctor?.id}`}
             className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-xl font-bold hover:opacity-90 transition-opacity"
           >
             <span className="material-symbols-outlined">add_circle</span>

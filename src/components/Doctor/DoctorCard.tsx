@@ -142,6 +142,17 @@ function DoctorCard({ doctor, nearestSlots = [], nearestDayLabel = null }: Docto
             Chi tiết
           </button>
 
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/chat?doctorId=${doctor.id}`);
+            }}
+            className="flex items-center gap-2 border border-slate-200 text-slate-700 px-6 py-2.5 rounded-xl hover:bg-slate-50 transition"
+          >
+            <span className="material-symbols-outlined">chat</span>
+            Nhắn tin
+          </button>
+
           <FavoriteButton doctorId={doctor.id} className="!p-2.5 border rounded-xl" />
         </div>
       </div>
