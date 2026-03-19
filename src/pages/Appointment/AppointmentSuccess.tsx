@@ -1,5 +1,6 @@
-﻿import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import type { Doctor } from '@/types/doctor';
 import type { UserProfile } from '@/types/user';
@@ -23,6 +24,7 @@ interface AppointmentSuccessState {
 
 function AppointmentSuccess() {
   const location = useLocation();
+  const navigate = useNavigate();
   const state = location.state as AppointmentSuccessState | null;
   const [loading, setLoading] = useState(false);
   const createPaymentMutation = useCreatePayment();
@@ -45,7 +47,8 @@ function AppointmentSuccess() {
 
       const appointmentId = appointment?.id;
       if (!appointmentId) {
-        alert('Không tìm thấy appointmentId.');
+        toast.error('Không tìm thấy appointmentId.');
+        navigate('/appointments');
         return;
       }
 
@@ -61,8 +64,16 @@ function AppointmentSuccess() {
 
       window.location.href = checkoutUrl;
     } catch (error) {
-      console.error('Lỗi tạo payment:', error);
-      alert(error instanceof Error ? error.message : 'Có lỗi xảy ra khi tạo thanh toán');
+      const errorMessage =
+        error instanceof Error && (error as any).response?.data?.message
+          ? typeof (error as any).response.data.message === 'string'
+            ? (error as any).response.data.message
+            : (error as any).response.data.message.message
+          : error instanceof Error
+            ? error.message
+            : 'Có lỗi xảy ra khi tạo thanh toán';
+      console.error(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import type { Doctor } from '@/types/doctor';
 import type { UserProfile } from '@/types/user';
@@ -120,7 +121,7 @@ export default function AppointmentConfirm() {
         patientNotes: safePatientNotesHtml || '',
       });
 
-      alert('Đặt lịch thành công');
+      toast.success('Đặt lịch thành công');
 
       navigate('/appointment-success', {
         state: {
@@ -132,8 +133,16 @@ export default function AppointmentConfirm() {
         },
       });
     } catch (error) {
-      console.error('Lỗi tạo lịch:', error);
-      alert(error instanceof Error ? error.message : 'Có lỗi xảy ra khi tạo lịch');
+      const errorMessage =
+        error instanceof Error && (error as any).response?.data?.message
+          ? typeof (error as any).response.data.message === 'string'
+            ? (error as any).response.data.message
+            : (error as any).response.data.message.message
+          : error instanceof Error
+            ? error.message
+            : 'Có lỗi xảy ra khi tạo lịch';
+      console.error(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

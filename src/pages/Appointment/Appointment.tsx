@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { useLocation, useNavigate } from "react-router-dom";
 
 import AdditionalInfoSection from "@/components/appointment/AdditionalInfoSection";
@@ -43,8 +44,8 @@ function Appointment() {
   };
 
   const handleContinue = () => {
-    if (!doctor || !user || !selectedDate || !selectedSlotId || !selectedSlot) {
-      alert("Vui lòng chọn đầy đủ ngày và giờ khám");
+    if (!selectedDate || !selectedSlotId) {
+      toast.warning("Vui lòng chọn đầy đủ ngày và giờ khám");
       return;
     }
 

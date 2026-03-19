@@ -1,5 +1,6 @@
-﻿import { useMemo } from 'react';
+import { useMemo } from 'react';
 
+import FavoriteButton from '@/components/ui/FavoriteButton';
 import { getSpecialtyConfig } from '@/components/home/SpecialtyConfig';
 import type { DoctorDetail } from '@/types/doctor';
 import { getGenderLabel } from '@/utils/doctor';
@@ -50,6 +51,8 @@ function DoctorMainCard({ doctor }: DoctorMainCardProps) {
               <h1 className="text-3xl font-bold text-slate-900 mt-1">{doctorName}</h1>
               {doctor.position ? <p className="text-slate-500 mt-2">{doctor.position}</p> : null}
             </div>
+
+            <FavoriteButton doctorId={doctor.id} className="shadow-sm border border-slate-100" />
           </div>
 
           <div className="mt-4 flex flex-wrap gap-3">

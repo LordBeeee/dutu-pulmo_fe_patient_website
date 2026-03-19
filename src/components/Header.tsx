@@ -30,7 +30,7 @@ function Header() {
           </Link>
 
           <Link
-            to="/messages"
+            to="/chat"
             className="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors py-5"
           >
             Tin nhắn

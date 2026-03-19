@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import CancelAppointmentModal from '@/components/appointments/CancelAppointmentModal';
@@ -208,6 +208,16 @@ const AppointmentScheduleDetail: React.FC = () => {
               <a href={appointment.meetingUrl} target="_blank" rel="noreferrer" className="px-4 py-2.5 rounded-xl border border-primary text-primary font-semibold hover:bg-primary/5">
                 Vào phòng khám
               </a>
+            ) : null}
+
+            {appointment.status === 'COMPLETED' ? (
+              <Link
+                to={`/appointments/review?appointmentId=${appointment.id}`}
+                className="px-4 py-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 font-semibold hover:bg-amber-100 flex items-center gap-2 transition-all"
+              >
+                <span className="material-symbols-outlined text-sm">star</span>
+                <span>Đánh giá dịch vụ</span>
+              </Link>
             ) : null}
 
             {canCancel ? (

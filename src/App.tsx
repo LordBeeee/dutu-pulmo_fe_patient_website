@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
+import { Toaster } from 'sonner'
 
 import MainLayout from '@/layouts/MainLayout'
 import { useAuthStore } from '@/store/auth.store'
@@ -69,6 +70,7 @@ function RedirectIfAuthenticated() {
 function App() {
   return (
     <BrowserRouter>
+      <Toaster position="top-right" richColors closeButton />
       <Routes>
         <Route element={<RedirectIfAuthenticated />}>
           <Route path="/login" element={<Login />} />

@@ -1,6 +1,7 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import AsyncSelect from 'react-select/async';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 import { useLogout } from '@/hooks/use-auth';
 import {
@@ -161,8 +162,18 @@ function Profile() {
 
       const result = await uploadAvatarMutation.mutateAsync(file);
       setAvatarUrl(result.url);
-    } catch {
-      alert('Upload avatar thất bại');
+      toast.success('Upload avatar thành công');
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error && (error as any).response?.data?.message
+          ? typeof (error as any).response.data.message === 'string'
+            ? (error as any).response.data.message
+            : (error as any).response.data.message.message
+          : error instanceof Error
+            ? error.message
+            : 'Upload avatar thất bại';
+      console.error(errorMessage);
+      toast.error(errorMessage);
     }
   };
 
@@ -189,22 +200,31 @@ function Profile() {
     const userId = user?.id || profileQuery.data?.id;
 
     if (!userId) {
-      alert('Không tìm thấy user id');
+      toast.error('Không tìm thấy user id');
       return;
     }
 
     try {
       await updateUserMutation.mutateAsync({ userId, payload });
-      alert('Cập nhật thông tin thành công');
-    } catch {
-      alert('Cập nhật thất bại');
+      toast.success('Cập nhật thông tin thành công');
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error && (error as any).response?.data?.message
+          ? typeof (error as any).response.data.message === 'string'
+            ? (error as any).response.data.message
+            : (error as any).response.data.message.message
+          : error instanceof Error
+            ? error.message
+            : 'Cập nhật thất bại';
+      console.error(errorMessage);
+      toast.error(errorMessage);
     }
   };
 
   if (profileQuery.isLoading) {
     return (
       <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border">Đang tải hồ sơ...</div>
+        <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border transition-colors">Đang tải hồ sơ...</div>
       </main>
     );
   }
@@ -213,12 +233,12 @@ function Profile() {
     <main className="max-w-7xl mx-auto px-4 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
         <aside className="lg:w-72 space-y-6">
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-            <div className="flex flex-col items-center text-center">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm transition-colors text-center">
+            <div className="flex flex-col items-center">
               <label className="relative inline-block cursor-pointer">
                 <img src={avatarUrl || 'https://via.placeholder.com/150'} alt="Avatar" className="w-20 h-20 rounded-full object-cover border" />
                 <span className="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full border-2 border-white flex items-center justify-center">
-                  <span className="material-icons-outlined text-xs">edit</span>
+                  <span className="material-symbols-outlined text-xs">edit</span>
                 </span>
                 <input
                   type="file"
@@ -234,9 +254,27 @@ function Profile() {
             </div>
           </div>
 
-          <nav className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden p-2">
+          <nav className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden p-2 transition-colors">
             <ul className="space-y-1">
-              <li className="pt-4">
+              <li>
+                <Link
+                  to="/my-reviews"
+                  className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
+                >
+                  <span className="material-symbols-outlined text-[20px]">rate_review</span>
+                  <span className="text-sm">Đánh giá của tôi</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/favorites"
+                  className="w-full flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors font-medium"
+                >
+                  <span className="material-symbols-outlined text-[20px]">favorite</span>
+                  <span className="text-sm">Danh sách yêu thích</span>
+                </Link>
+              </li>
+              <li className="pt-4 border-t mt-4 border-slate-100 dark:border-slate-800">
                 <button
                   onClick={() => setShowLogoutModal(true)}
                   className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors font-medium"
@@ -250,7 +288,7 @@ function Profile() {
         </aside>
 
         <div className="flex-1 space-y-6">
-          <section className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <section className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-1">Thông tin cá nhân</h2>
               <p className="text-slate-500 text-sm">Quản lý thông tin hồ sơ của bạn để bảo mật tài khoản</p>
@@ -363,7 +401,7 @@ function Profile() {
 
               <div className="space-y-2">
                 <label className="text-sm font-semibold">Đường</label>
-                <textarea rows={3} className="w-full px-4 py-2.5 border rounded-xl" name="address" value={formData.address} onChange={handleChange}></textarea>
+                <textarea rows={3} className="w-full px-4 py-2.5 border rounded-xl shadow-none" name="address" value={formData.address} onChange={handleChange}></textarea>
               </div>
 
               <div className="flex justify-end gap-4 pt-4">
@@ -378,7 +416,7 @@ function Profile() {
 
       {showLogoutModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 w-full max-w-sm shadow-lg">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 w-full max-w-sm shadow-lg transition-colors">
             <h3 className="text-lg font-bold mb-2">Xác nhận đăng xuất</h3>
             <p className="text-slate-500 text-sm mb-6">Bạn có chắc chắn muốn đăng xuất khỏi tài khoản?</p>
 
@@ -406,10 +444,3 @@ function Profile() {
 }
 
 export default Profile;
-
-
-
-
-
-
-

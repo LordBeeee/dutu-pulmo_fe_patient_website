@@ -1,5 +1,6 @@
-﻿import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { toast } from 'sonner';
 
 import { useForgotPassword } from '@/hooks/useForgotPassword';
 import { useResendOtp } from '@/hooks/useResendOtp';
@@ -89,7 +90,7 @@ function VerifyOTP() {
     try {
       setLoading(true);
       await verifyOtpMutation.mutateAsync({ email, otp: otpCode });
-      alert('Xác thực thành công');
+      toast.success('Xác thực thành công');
       navigate('/login');
     } catch {
       setError('Mã OTP không hợp lệ hoặc đã hết hạn');
@@ -189,4 +190,3 @@ function VerifyOTP() {
 }
 
 export default VerifyOTP;
-

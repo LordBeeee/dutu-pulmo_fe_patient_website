@@ -1,4 +1,5 @@
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 import type { Doctor } from "../../types/doctor";
 import type { UserProfile } from "../../types/user";
 import type { TimeSlot } from "../../components/appointment/TimeSlotSection";
@@ -193,9 +194,18 @@ export default function PaymentSuccess() {
   const handleCopy = async (value: string) => {
     try {
       await navigator.clipboard.writeText(value);
-      alert("Đã sao chép");
-    } catch {
-      alert("Không thể sao chép");
+      toast.success("Đã sao chép");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error && (error as any).response?.data?.message
+          ? typeof (error as any).response.data.message === 'string'
+            ? (error as any).response.data.message
+            : (error as any).response.data.message.message
+          : error instanceof Error
+            ? error.message
+            : 'Không thể sao chép';
+      console.error(errorMessage);
+      toast.error(errorMessage);
     }
   };
 

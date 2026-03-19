@@ -1,6 +1,6 @@
-﻿import { useState } from 'react';
-import { AxiosError } from 'axios';
+import { useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
 
 import { useResetPassword } from '@/hooks/useResetPassword';
 
@@ -58,13 +58,22 @@ function ResetPassword() {
           newPassword: password,
         });
 
-        alert('Đặt lại mật khẩu thành công');
+        toast.success('Đặt lại mật khẩu thành công');
         navigate('/login');
-      } catch (err) {
-        const error = err as AxiosError<{ message?: string }>;
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error && (error as any).response?.data?.message
+            ? typeof (error as any).response.data.message === 'string'
+              ? (error as any).response.data.message
+              : (error as any).response.data.message.message
+            : error instanceof Error
+              ? error.message
+              : 'Đặt lại mật khẩu thất bại';
+        console.error(errorMessage);
         setErrors({
-          password: error.response?.data?.message || 'Đặt lại mật khẩu thất bại',
+          password: errorMessage,
         });
+        toast.error(errorMessage);
       } finally {
         setLoading(false);
       }

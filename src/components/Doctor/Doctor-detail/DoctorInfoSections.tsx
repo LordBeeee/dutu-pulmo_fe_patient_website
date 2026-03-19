@@ -1,5 +1,6 @@
 import type { DoctorDetail } from "../../../types/doctor";
 import { formatDate } from "../../../utils/doctor";
+import DoctorReviews from "./DoctorReviews";
 
 interface DoctorInfoSectionsProps {
   doctor: DoctorDetail;
@@ -76,6 +77,18 @@ function DoctorInfoSections({ doctor }: DoctorInfoSectionsProps) {
           <p className="text-slate-600 whitespace-pre-line">
             {doctor.expertiseDescription || "Chưa cập nhật."}
           </p>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+          <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary">rate_review</span>
+            Đánh giá từ bệnh nhân
+          </h2>
+          {doctor.id ? (
+            <DoctorReviews doctorId={doctor.id} />
+          ) : (
+            <p className="text-sm text-slate-400 text-center py-4">Chưa có thông tin đánh giá.</p>
+          )}
         </div>
       </div>
     </section>

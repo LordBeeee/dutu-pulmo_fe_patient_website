@@ -1,5 +1,6 @@
-﻿import { Link, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
+import FavoriteButton from '@/components/ui/FavoriteButton';
 import { getSpecialtyConfig } from '@/components/home/SpecialtyConfig';
 import { useHospitalDetail, useHospitalDoctors } from '@/hooks/useHospitals';
 
@@ -50,15 +51,21 @@ function HospitalDetailPage() {
           </div>
 
           <div className="flex-1">
-            <span
-              className={`inline-flex px-2 py-1 rounded text-[10px] font-bold uppercase ${
-                isClinic ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600'
-              }`}
-            >
-              {isClinic ? 'Phòng khám' : 'Bệnh viện'}
-            </span>
+            <div className="flex justify-between items-start">
+              <div>
+                <span
+                  className={`inline-flex px-2 py-1 rounded text-[10px] font-bold uppercase ${
+                    isClinic ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600'
+                  }`}
+                >
+                  {isClinic ? 'Phòng khám' : 'Bệnh viện'}
+                </span>
 
-            <h1 className="mt-2 text-3xl font-bold text-slate-900">{hospital.name}</h1>
+                <h1 className="mt-2 text-3xl font-bold text-slate-900">{hospital.name}</h1>
+              </div>
+              
+              <FavoriteButton hospitalId={hospital.id} className="shadow-sm border border-slate-100" />
+            </div>
 
             {hospital.address ? (
               <p className="mt-3 text-slate-600 flex items-start gap-2">

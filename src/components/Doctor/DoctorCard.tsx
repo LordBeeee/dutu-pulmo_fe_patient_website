@@ -1,5 +1,6 @@
-﻿import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
+import FavoriteButton from '@/components/ui/FavoriteButton';
 import { getSpecialtyConfig } from '@/components/home/SpecialtyConfig';
 import type { TimeSlotResponse } from '@/services/doctor';
 import type { Doctor } from '@/types/doctor';
@@ -141,12 +142,7 @@ function DoctorCard({ doctor, nearestSlots = [], nearestDayLabel = null }: Docto
             Chi tiết
           </button>
 
-          <button
-            className="p-2.5 border rounded-xl items-center justify-center flex hover:bg-slate-50 transition"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <span className="material-symbols-outlined">favorite</span>
-          </button>
+          <FavoriteButton doctorId={doctor.id} className="!p-2.5 border rounded-xl" />
         </div>
       </div>
     </div>
