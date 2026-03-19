@@ -1,44 +1,44 @@
-import { useState,useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { login } from "../../services/auth.service";
-import axios from "axios";
+﻿import { useEffect, useState } from 'react';
+import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+import { useLogin } from '@/hooks/useLogin';
+import { useAuthStore } from '@/store/auth.store';
 
 function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const loginMutation = useLogin();
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const user = useAuthStore((state) => state.user);
   const [errors, setErrors] = useState<{
     email?: string;
     password?: string;
   }>({});
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    const userStr = localStorage.getItem("user");
-
-    if (token && userStr) {
-      navigate("/", { replace: true });
+    if (accessToken && user) {
+      navigate('/', { replace: true });
     }
-  }, [navigate]);
-
-
+  }, [accessToken, navigate, user]);
 
   const handleLogin = async () => {
     const newErrors: typeof errors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!email.trim()) {
-      newErrors.email = "Vui lòng nhập email";
+      newErrors.email = 'Vui lòng nhập email';
     } else if (!emailRegex.test(email)) {
-      newErrors.email = "Email không đúng định dạng";
+      newErrors.email = 'Email không đúng định dạng';
     }
 
     if (!password) {
-      newErrors.password = "Vui lòng nhập mật khẩu";
+      newErrors.password = 'Vui lòng nhập mật khẩu';
     } else if (password.length < 8) {
-      newErrors.password = "Mật khẩu phải có ít nhất 8 ký tự";
+      newErrors.password = 'Mật khẩu phải có ít nhất 8 ký tự';
     } else if (
       !/[A-Z]/.test(password) ||
       !/[a-z]/.test(password) ||
@@ -46,10 +46,10 @@ function Login() {
       !/[!@#$%^&*(),.?":{}|<>]/.test(password)
     ) {
       newErrors.password =
-        "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường và 1 số và 1 ký tự đặc biệt";
+        'Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường và 1 số và 1 ký tự đặc biệt';
     } else if (password.length > 128) {
-      newErrors.password = "Mật khẩu không quá 128 ký tự";
-    } 
+      newErrors.password = 'Mật khẩu không quá 128 ký tự';
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -60,42 +60,29 @@ function Login() {
       setLoading(true);
       setErrors({});
 
-      const res = await login(email, password);
-
-      const { accessToken, refreshToken, account } = res;
-      const user = account.user;
-
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-      localStorage.setItem("user", JSON.stringify(user));
-      
-      navigate("/");
-      
+      await loginMutation.mutateAsync({ email, password });
+      navigate('/');
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        const status = err.response?.status;
-        // 401: sai email/mật khẩu
-        if (status === 401) {
-          setErrors({ password: "Mật khẩu hoặc email không đúng" });
-          return;
-        }
+      const error = err as AxiosError<{ message?: string }>;
+      const status = error.response?.status;
 
-        // 403: chưa xác nhận email / không có quyền
-        if (status === 403) {
-          setErrors({ email: "Email chưa được xác nhận" });
-          return;
-        }
-        setErrors({
-          password: "Đăng nhập thất bại",
-        });
-      } else {
-        setErrors({ password: "Đăng nhập thất bại" });
+      if (status === 401) {
+        setErrors({ password: 'Mật khẩu hoặc email không đúng' });
+        return;
       }
+
+      if (status === 403) {
+        setErrors({ email: 'Email chưa được xác nhận' });
+        return;
+      }
+
+      setErrors({
+        password: error.response?.data?.message || 'Đăng nhập thất bại',
+      });
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <div className="bg-background-light dark:bg-background-dark min-h-screen transition-colors duration-300">
 
@@ -349,3 +336,5 @@ function Login() {
 }
 
 export default Login
+
+

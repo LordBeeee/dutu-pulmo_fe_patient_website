@@ -1,11 +1,74 @@
-import { useState } from "react";
+﻿import { useState } from 'react';
+import { AxiosError } from 'axios';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+
+import { useResetPassword } from '@/hooks/useResetPassword';
 
 function ResetPassword() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [searchParams] = useSearchParams();
+
+    const state = (location.state || {}) as { email?: string; otp?: string };
+    const email = state.email || searchParams.get('email') || '';
+    const otp = state.otp || searchParams.get('otp') || '';
+
     const [showPassword, setShowPassword] = useState(false);
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState<{
-        password?: string;
+      password?: string;
+      confirmPassword?: string;
     }>({});
+
+    const resetPasswordMutation = useResetPassword();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+
+      const nextErrors: typeof errors = {};
+
+      if (!password) {
+        nextErrors.password = 'Vui lòng nhập mật khẩu mới';
+      } else if (password.length < 8) {
+        nextErrors.password = 'Mật khẩu phải có ít nhất 8 ký tự';
+      }
+
+      if (password !== confirmPassword) {
+        nextErrors.confirmPassword = 'Mật khẩu xác nhận không khớp';
+      }
+
+      if (!email || !otp) {
+        nextErrors.password = 'Thiếu email hoặc OTP để đặt lại mật khẩu';
+      }
+
+      if (Object.keys(nextErrors).length > 0) {
+        setErrors(nextErrors);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setErrors({});
+
+        await resetPasswordMutation.mutateAsync({
+          email,
+          otp,
+          newPassword: password,
+        });
+
+        alert('Đặt lại mật khẩu thành công');
+        navigate('/login');
+      } catch (err) {
+        const error = err as AxiosError<{ message?: string }>;
+        setErrors({
+          password: error.response?.data?.message || 'Đặt lại mật khẩu thất bại',
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
     return (
         <div className="bg-background-light dark:bg-background-dark min-h-screen transition-colors duration-300">
 
@@ -99,7 +162,7 @@ function ResetPassword() {
               <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed px-4">Nhập lại mật khẩu mới cho tài khoản.</p>
             </div>
 
-            <form className="space-y-5" noValidate >
+            <form className="space-y-5" noValidate onSubmit={handleSubmit}>
               {/* Mật khẩu */}
               <div>
                 <div className="flex items-center justify-between mb-1.5 ml-1">
@@ -120,6 +183,8 @@ function ResetPassword() {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Nhập mật khẩu mới"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="block w-full pl-11 pr-11 py-3 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-gray-900 dark:text-white ring-1 ring-gray-200 dark:ring-gray-700 focus:ring-2 focus:ring-primary transition-all placeholder:text-gray-400"
                   />
 
@@ -141,7 +206,7 @@ function ResetPassword() {
                 </div>
 
                 <div className="flex items-center justify-between mb-1.5 ml-1">
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Xác nhận mật khẩu
                   </label>
                 </div>
@@ -153,10 +218,12 @@ function ResetPassword() {
                   </div>
 
                   <input
-                    id="password"
-                    name="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
                     type={showPassword ? "text" : "password"}
                     placeholder="Nhập lại mật khẩu"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     className="block w-full pl-11 pr-11 py-3 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-gray-900 dark:text-white ring-1 ring-gray-200 dark:ring-gray-700 focus:ring-2 focus:ring-primary transition-all placeholder:text-gray-400"
                   />
 
@@ -172,19 +239,19 @@ function ResetPassword() {
                   </button>
                 </div>
                 <div className="flex items-center justify-between mt-1.5 ml-1">
-                  <div>{errors.password && (
-                    <p className="text-red-500 text-xs">{errors.password}</p>
+                  <div>{errors.confirmPassword && (
+                    <p className="text-red-500 text-xs">{errors.confirmPassword}</p>
                   )}</div>
                 </div>
               </div>
 
-              {/* Nút đăng nhập */}
+              {/* Nút Đăng nhập */}
               <button
                 type="submit"
                 disabled={loading}
                 className="w-full bg-primary hover:bg-blue-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-blue-500/30 transition-all active:scale-[0.98] disabled:opacity-50"
               >
-                {loading ? "Đang Lưu..." : "Lưu mật khẩu mới"}
+                {loading ? "Đang lưu..." : "Lưu mật khẩu mới"}
               </button>
 
             </form>
@@ -200,3 +267,4 @@ function ResetPassword() {
 }
 
 export default ResetPassword
+

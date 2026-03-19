@@ -1,63 +1,48 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { forgotPassword } from "../../services/auth.service"
-// import axios from "axios"
+﻿import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { useForgotPassword } from '@/hooks/useForgotPassword';
 
 function ForgotPassword() {
-    const navigate = useNavigate()
-    const [email, setEmail] = useState("")
-    const [loading, setLoading] = useState(false)
-    const [errors, setErrors] = useState<{
-        email?: string;
-    }>({});
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{
+    email?: string;
+  }>({});
+  const forgotPasswordMutation = useForgotPassword();
 
-        const newErrors: { email?: string } = {}
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-        if (!email.trim()) {
-            newErrors.email = "Vui lòng nhập email"
-        }
+    const newErrors: { email?: string } = {};
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        if (email && !emailRegex.test(email)) {
-            newErrors.email = "Email không đúng định dạng"
-        }
-
-        if (Object.keys(newErrors).length > 0) {
-            setErrors(newErrors)
-            return
-        }
-
-        try {
-            setLoading(true)
-            setErrors({})
-
-            // 3️⃣ Gọi API
-            await forgotPassword(email)
-
-            // ✅ Thành công → sang OTP
-            navigate("/verify-OTP", { state: { email } })
-
-        // } catch (err) {
-        //     if (axios.isAxiosError(err)) {
-        //         const status = err.response?.status;
-                
-        //         if (status === 404) {
-        //         setErrors({ email: "Email không tồn tại trong hệ thống" })
-        //         } else {
-        //         setErrors({ email: "Có lỗi xảy ra, vui lòng thử lại" })
-        //         }
-        //     }
-        } catch {
-        setErrors({
-            email: "Có lỗi xảy ra, vui lòng thử lại sau",
-        });   
-        } finally {
-            setLoading(false)
-        }
+    if (!email.trim()) {
+      newErrors.email = 'Vui lòng nhập email';
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !emailRegex.test(email)) {
+      newErrors.email = 'Email không đúng định dạng';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setErrors({});
+
+      await forgotPasswordMutation.mutateAsync({ email });
+    } catch {
+      // Keep the same behavior as mobile: do not reveal whether email exists.
+    } finally {
+      setLoading(false);
+      navigate('/verify-otp', { state: { email, mode: 'reset' } });
+    }
+  };
     return (
         <div className="bg-background-light dark:bg-background-dark min-h-screen transition-colors duration-300">
 
@@ -207,3 +192,4 @@ function ForgotPassword() {
 }
 
 export default ForgotPassword
+
