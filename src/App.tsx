@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import { Toaster } from 'sonner'
 
+import { useFcmToken } from '@/hooks/use-fcm-token'
 import MainLayout from '@/layouts/MainLayout'
 import { useAuthStore } from '@/store/auth.store'
 import AIChatPage from '@/pages/AIChat/AIChatPage'
@@ -66,10 +67,17 @@ function RedirectIfAuthenticated() {
   return <Outlet />
 }
 
+function NotificationHandler() {
+  const accessToken = useAuthStore((state) => state.accessToken)
+  useFcmToken(!!accessToken)
+  return null
+}
+
 function App() {
   return (
     <BrowserRouter>
       <Toaster position="top-right" richColors closeButton />
+      <NotificationHandler />
       <Routes>
         <Route element={<RedirectIfAuthenticated />}>
           <Route path="/login" element={<Login />} />

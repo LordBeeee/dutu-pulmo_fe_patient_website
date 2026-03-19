@@ -14,6 +14,7 @@ import {
   useWards,
 } from '@/hooks/use-profile';
 import { profileService } from '@/services/profile.service';
+import { authService } from '@/services/auth.service';
 import { useAuthStore } from '@/store/auth.store';
 
 type Option = {
@@ -499,7 +500,22 @@ function Profile() {
                 <textarea rows={3} className="w-full px-4 py-2.5 border rounded-xl shadow-none" name="address" value={formData.address} onChange={handleChange}></textarea>
               </div>
 
-              <div className="flex justify-end gap-4 pt-4">
+              <div className="flex justify-end gap-4 pt-4 items-center">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      await authService.testPushNotification();
+                      toast.success('Đã gửi yêu cầu test notification');
+                    } catch (error) {
+                      toast.error('Gửi test notification thất bại');
+                    }
+                  }}
+                  className="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-[18px]">notifications_active</span>
+                  Test Notification
+                </button>
                 <button type="submit" disabled={loading} className="px-8 py-2 bg-primary text-white rounded-xl">
                   {loading ? 'Đang lưu...' : 'Lưu thay đổi'}
                 </button>

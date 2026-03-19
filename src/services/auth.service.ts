@@ -1,4 +1,4 @@
-﻿import { api } from '@/services/api';
+import { api } from '@/services/api';
 import type {
   AuthMessageResponseDto,
   ForgotPasswordDto,
@@ -53,6 +53,21 @@ export const authService = {
   resendOtp: async (payload: ResendVerificationDto) => {
     const { data } = await api.post<AuthMessageResponseDto>('/auth/resend-otp', payload);
     return data;
+  },
+
+  addFcmToken: async (token: string): Promise<void> => {
+    await api.post('/users/me/fcm-token', { token });
+  },
+
+  removeFcmToken: async (token: string): Promise<void> => {
+    await api.delete('/users/me/fcm-token', { data: { token } });
+  },
+
+  testPushNotification: async (): Promise<void> => {
+    await api.post('/notifications/test-push', {
+      title: '🎉 Test Push Notification',
+      content: 'Hello từ Patient Website! Đây là thông báo đẩy thử nghiệm.',
+    });
   },
 };
 
