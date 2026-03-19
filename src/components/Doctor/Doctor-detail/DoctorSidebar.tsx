@@ -1,5 +1,5 @@
 import type { DoctorDetail } from "../../../types/doctor";
-import { formatCurrency, formatDate } from "../../../utils/doctor";
+import { formatCurrency } from "../../../utils/doctor";
 
 interface DoctorSidebarProps {
   doctor: DoctorDetail;

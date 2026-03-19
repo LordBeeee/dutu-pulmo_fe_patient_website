@@ -1,53 +1,88 @@
-import type { DoctorDetail, DoctorDetailApiResponse, DoctorFilters, DoctorsResponse } from "../types/doctor";
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "https://dutu-pulmo-be.onrender.com";
+﻿import { api } from '@/services/api';
+import type { DoctorDetail, DoctorFilters, DoctorsResponse } from '@/types/doctor';
+import { cleanParams } from '@/utils/query';
 
-const BASE_URL = `${API_BASE_URL}/public/doctors`;
+export type AppointmentTypeFilter = 'all' | 'online' | 'offline';
 
-export async function getDoctors(
-  page: number,
-  filters: DoctorFilters
-): Promise<DoctorsResponse> {
-  const params = new URLSearchParams();
+export type TimeSlotSummaryItem = {
+  date: string;
+  count: number;
+  hasAvailability: boolean;
+};
 
-  params.set("page", String(page));
-  params.set("limit", "10");
-  params.set("sort", filters.sort);
-  params.set("order", filters.order);
+export type TimeSlotResponse = {
+  id: string;
+  doctorId: string;
+  allowedAppointmentTypes: string[];
+  startTime: string;
+  endTime: string;
+  capacity: number;
+  bookedCount: number;
+  isAvailable: boolean;
+  baseConsultationFee?: number;
+  discountPercent?: number;
+  finalConsultationFee?: number;
+  currency?: string;
+  createdAt: string;
+  updatedAt: string;
+};
 
-  if (filters.search) {
-    params.set("search", filters.search);
-  }
+export const doctorService = {
+  getDoctors: async (page: number, filters: DoctorFilters): Promise<DoctorsResponse> => {
+    const { data } = await api.get<DoctorsResponse['data']>('/public/doctors', {
+      params: cleanParams({
+        page,
+        limit: 10,
+        sort: filters.sort,
+        order: filters.order,
+        search: filters.search,
+        specialty: filters.specialty === 'ALL' ? undefined : filters.specialty,
+        hospitalId: filters.hospitalId || undefined,
+        appointmentType: filters.appointmentType === 'all' ? undefined : filters.appointmentType,
+      }),
+    });
 
-  if (filters.specialty !== "ALL") {
-    params.set("specialty", filters.specialty);
-  }
+    return { data };
+  },
 
-  if (filters.appointmentType !== "all") {
-    params.set("appointmentType", filters.appointmentType);
-  }
+  getPublicDoctorDetail: async (id: string): Promise<DoctorDetail> => {
+    const { data } = await api.get<DoctorDetail>(`/public/doctors/${id}`);
+    return data;
+  },
 
-  const res = await fetch(`${BASE_URL}?${params.toString()}`);
+  getDoctorTimeSlots: async (doctorId: string): Promise<TimeSlotResponse[]> => {
+    const { data } = await api.get<TimeSlotResponse[]>(`/public/doctors/${doctorId}/time-slots`);
+    return data;
+  },
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch doctors");
-  }
+  getDoctorTimeSlotSummary: async (
+    doctorId: string,
+    from: string,
+    to: string,
+  ): Promise<TimeSlotSummaryItem[]> => {
+    const { data } = await api.get<TimeSlotSummaryItem[]>(
+      `/public/doctors/${doctorId}/time-slots/summary`,
+      {
+        params: { from, to },
+      },
+    );
+    return data;
+  },
 
-  return res.json();
-}
+  getDoctorAvailableTimeSlots: async (
+    doctorId: string,
+    date: string,
+  ): Promise<TimeSlotResponse[]> => {
+    const { data } = await api.get<TimeSlotResponse[]>(
+      `/public/doctors/${doctorId}/time-slots/available`,
+      {
+        params: { date },
+      },
+    );
+    return data;
+  },
+};
 
-export async function getPublicDoctorDetail(id: string): Promise<DoctorDetail> {
-  const response = await fetch(`${API_BASE_URL}/public/doctors/${id}`);
+export const getDoctors = doctorService.getDoctors;
+export const getPublicDoctorDetail = doctorService.getPublicDoctorDetail;
 
-  if (!response.ok) {
-    throw new Error("Không tìm thấy thông tin bác sĩ");
-  }
-
-  const result: DoctorDetailApiResponse = await response.json();
-
-  if (!result?.data) {
-    throw new Error("Dữ liệu bác sĩ không hợp lệ");
-  }
-
-  return result.data;
-}

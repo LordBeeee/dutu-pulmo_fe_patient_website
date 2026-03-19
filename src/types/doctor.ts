@@ -40,6 +40,7 @@ export interface DoctorsResponse {
 export interface DoctorFilters {
   search: string;
   specialty: string;
+  hospitalId: string;
   appointmentType: "all" | "online" | "offline";
   sort: string;
   order: "ASC" | "DESC";

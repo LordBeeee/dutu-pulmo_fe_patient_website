@@ -21,6 +21,7 @@ export const DOCTOR_SORT_OPTIONS = [
 export const DEFAULT_DOCTOR_FILTERS: DoctorFilters = {
   search: "",
   specialty: "ALL",
+  hospitalId: "",
   appointmentType: "all",
   sort: "createdAt",
   order: "DESC",
