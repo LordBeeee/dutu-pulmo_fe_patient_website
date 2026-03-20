@@ -73,6 +73,8 @@ function NotificationHandler() {
   return null
 }
 
+import ProfileLayout from '@/layouts/ProfileLayout'
+
 function App() {
   return (
     <BrowserRouter>
@@ -91,7 +93,18 @@ function App() {
         <Route element={<RequireAuth />}>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/profile" element={<Profile />} />
+            
+            {/* Dashboard Routes with Sidebar */}
+            <Route element={<ProfileLayout />}>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/favorites" element={<FavoritesPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/change-password" element={<ChangePasswordPage />} />
+              <Route path="/my-reviews" element={<MyReviewsPage />} />
+              <Route path="/reports" element={<ReportsPage />} />
+              <Route path="/reports/new" element={<NewReportPage />} />
+            </Route>
+
             <Route path="/doctor-appointment" element={<Navigate to="/doctor" replace />} />
             <Route path="/appointment" element={<Appointment />} />
             <Route path="/appointment-confirm" element={<AppointmentConfirm />} />
@@ -113,15 +126,9 @@ function App() {
             <Route path="/medical-records/:recordId" element={<MedicalRecordDetailPage />} />
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/appointments/review" element={<AppointmentReviewPage />} />
-            <Route path="/favorites" element={<FavoritesPage />} />
-            <Route path="/notifications" element={<NotificationsPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/change-password" element={<ChangePasswordPage />} />
-            <Route path="/my-reviews" element={<MyReviewsPage />} />
             <Route path="/prescriptions" element={<PrescriptionsPage />} />
             <Route path="/prescriptions/:prescriptionId" element={<PrescriptionDetailPage />} />
-            <Route path="/reports" element={<ReportsPage />} />
-            <Route path="/reports/new" element={<NewReportPage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/specialties" element={<SpecialtiesPage />} />
             <Route path="/chat-ai" element={<AIChatPage />} />
             <Route path="/video-call/:appointmentId" element={<VideoCallPage />} />

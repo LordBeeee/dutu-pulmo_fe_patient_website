@@ -1,45 +1,80 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/auth.store';
 import { useNotificationUnreadCount } from '@/hooks/use-notifications';
+import { useState } from 'react';
 
 function Header() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const user = useAuthStore((state) => state.user);
   const { data: unreadCount } = useNotificationUnreadCount();
 
+  const [searchQuery, setSearchQuery] = useState('');
+
   const fullName = user?.fullName || 'Người dùng';
   const avatarUrl = user?.avatarUrl || '/src/assets/default-avatar.png';
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      navigate(`/doctor?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const isActive = (path: string) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2 flex-shrink-0">
-          <div className="w-24 h-24 rounded-lg flex items-center justify-center">
+          <Link to="/" className="w-24 h-24 rounded-lg flex items-center justify-center">
             <img src="/src/assets/Logo/chu_ngang_ko.png" alt="" />
-          </div>
+          </Link>
         </div>
 
         <nav className="hidden lg:flex items-center gap-6">
-          <Link to="/" className="text-primary font-semibold border-b-2 border-primary py-5">
+          <Link
+            to="/"
+            className={`${
+              isActive('/') 
+                ? 'text-primary font-semibold border-b-2 border-primary' 
+                : 'text-slate-600 dark:text-slate-400 hover:text-primary'
+            } py-5 transition-colors`}
+          >
             Trang chủ
           </Link>
 
           <Link
             to="/appointment-schedule"
-            className="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors py-5"
+            className={`${
+              isActive('/appointment-schedule') 
+                ? 'text-primary font-semibold border-b-2 border-primary' 
+                : 'text-slate-600 dark:text-slate-400 hover:text-primary transition-colors'
+            } py-5`}
           >
             Lịch khám
           </Link>
 
           <Link
             to="/chat"
-            className="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors py-5"
+            className={`${
+              isActive('/chat') 
+                ? 'text-primary font-semibold border-b-2 border-primary' 
+                : 'text-slate-600 dark:text-slate-400 hover:text-primary transition-colors'
+            } py-5`}
           >
             Tin nhắn
           </Link>
 
           <Link
             to="/chat-ai"
-            className="flex items-center gap-1 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors py-5"
+            className={`${
+              isActive('/chat-ai') 
+                ? 'text-primary font-semibold border-b-2 border-primary' 
+                : 'text-slate-600 dark:text-slate-400 hover:text-primary transition-colors'
+            } flex items-center gap-1 py-5`}
           >
             <span className="material-icons-round text-sm">auto_awesome</span>
             Chat AI
@@ -53,6 +88,9 @@ function Header() {
             </span>
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearch}
               placeholder="Tìm bác sĩ, chuyên khoa..."
               className="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20"
             />

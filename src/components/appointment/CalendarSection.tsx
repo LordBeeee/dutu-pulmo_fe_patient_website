@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useDoctorSlotSummary } from '@/hooks/use-doctors';
 
@@ -41,14 +41,14 @@ function CalendarSection({
     return now;
   }, []);
 
-  const oneMonthLater = useMemo(() => {
+  const fiveYearLater = useMemo(() => {
     const next = new Date(today);
-    next.setMonth(next.getMonth() + 1);
+    next.setFullYear(next.getFullYear() + 5);
     return next;
   }, [today]);
 
   const from = formatDate(today);
-  const to = formatDate(oneMonthLater);
+  const to = formatDate(fiveYearLater);
 
   const summaryQuery = useDoctorSlotSummary(doctorId, from, to, appointmentType);
 
@@ -64,11 +64,11 @@ function CalendarSection({
   const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
   const monthValue = currentMonth.getMonth();
   const yearValue = currentMonth.getFullYear();
-  const yearOptions = [today.getFullYear(), today.getFullYear() + 1, today.getFullYear() + 2];
+  const yearOptions = [today.getFullYear(), today.getFullYear() + 1];
 
   const monthLabel = `Tháng ${String(currentMonth.getMonth() + 1).padStart(2, '0')} - ${currentMonth.getFullYear()}`;
   const canGoPrev = !isSameMonth(currentMonth, today);
-  const canGoNext = currentMonth < new Date(oneMonthLater.getFullYear(), oneMonthLater.getMonth(), 1);
+  const canGoNext = currentMonth < new Date(fiveYearLater.getFullYear(), fiveYearLater.getMonth(), 1);
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
@@ -147,7 +147,7 @@ function CalendarSection({
             const item = summaryMap.get(dateStr);
 
             const isPast = dateObj < today;
-            const isOutOfRange = dateObj > oneMonthLater;
+            const isOutOfRange = dateObj > fiveYearLater;
             const isSelected = selectedDate === dateStr;
             const count = item?.count ?? 0;
             const isAvailable = count > 0;

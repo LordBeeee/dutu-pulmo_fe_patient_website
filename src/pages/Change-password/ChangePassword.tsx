@@ -29,24 +29,24 @@ export default function ChangePasswordPage() {
   };
 
   return (
-    <main className="max-w-3xl mx-auto px-4 py-10">
-      <div className="bg-white dark:bg-dark-card rounded-2xl border border-slate-200 dark:border-dark-border shadow-sm overflow-hidden">
-        <div className="p-8 border-b border-slate-100 dark:border-dark-border">
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Đổi mật khẩu</h1>
-          <p className="text-slate-500 dark:text-gray-400 mt-1">Vui lòng nhập mật khẩu hiện tại và mật khẩu mới của bạn.</p>
+    <div className="space-y-6 max-w-2xl">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-colors">
+        <div className="p-8 border-b border-slate-100 dark:border-slate-800">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Đổi mật khẩu</h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-1">Vui lòng nhập mật khẩu hiện tại và mật khẩu mới của bạn.</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6">
           {/* Mật khẩu cũ */}
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-900 dark:text-gray-200 block">
+            <label className="text-sm font-bold text-slate-900 dark:text-slate-200 block">
               Mật khẩu hiện tại
             </label>
             <input
               type="password"
               {...register('oldPassword', { required: 'Vui lòng nhập mật khẩu hiện tại' })}
-              className={`w-full px-4 py-3 bg-slate-50 dark:bg-dark-sub border rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm dark:text-white ${
-                errors.oldPassword ? 'border-red-500' : 'border-slate-200 dark:border-dark-border'
+              className={`w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm dark:text-white ${
+                errors.oldPassword ? 'border-red-500' : 'border-slate-200 dark:border-slate-800'
               }`}
             />
             {errors.oldPassword && (
@@ -56,7 +56,7 @@ export default function ChangePasswordPage() {
 
           {/* Mật khẩu mới */}
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-900 dark:text-gray-200 block">
+            <label className="text-sm font-bold text-slate-900 dark:text-slate-200 block">
               Mật khẩu mới
             </label>
             <input
@@ -69,8 +69,8 @@ export default function ChangePasswordPage() {
                   message: 'Mật khẩu phải chứa chữ hoa, chữ thường, số và ký tự đặc biệt',
                 },
               })}
-              className={`w-full px-4 py-3 bg-slate-50 dark:bg-dark-sub border rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm dark:text-white ${
-                errors.newPassword ? 'border-red-500' : 'border-slate-200 dark:border-dark-border'
+              className={`w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm dark:text-white ${
+                errors.newPassword ? 'border-red-500' : 'border-slate-200 dark:border-slate-800'
               }`}
             />
             {errors.newPassword && (
@@ -80,7 +80,7 @@ export default function ChangePasswordPage() {
 
           {/* Xác nhận mật khẩu mới */}
           <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-900 dark:text-gray-200 block">
+            <label className="text-sm font-bold text-slate-900 dark:text-slate-200 block">
               Xác nhận mật khẩu mới
             </label>
             <input
@@ -89,8 +89,8 @@ export default function ChangePasswordPage() {
                 required: 'Vui lòng xác nhận mật khẩu mới',
                 validate: (value) => value === newPassword || 'Mật khẩu xác nhận không khớp',
               })}
-              className={`w-full px-4 py-3 bg-slate-50 dark:bg-dark-sub border rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm dark:text-white ${
-                errors.confirmPassword ? 'border-red-500' : 'border-slate-200 dark:border-dark-border'
+              className={`w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border rounded-xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm dark:text-white ${
+                errors.confirmPassword ? 'border-red-500' : 'border-slate-200 dark:border-slate-800'
               }`}
             />
             {errors.confirmPassword && (
@@ -102,7 +102,7 @@ export default function ChangePasswordPage() {
             <button
               type="button"
               onClick={() => navigate('/profile')}
-              className="flex-1 py-3 border border-slate-200 dark:border-dark-border text-slate-600 dark:text-gray-400 font-bold rounded-2xl hover:bg-slate-50 dark:hover:bg-dark-sub transition-all"
+              className="flex-1 py-3 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-bold rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
             >
               Hủy bỏ
             </button>
@@ -116,7 +116,6 @@ export default function ChangePasswordPage() {
           </div>
         </form>
       </div>
-    </main>
+    </div>
   );
 }
-
