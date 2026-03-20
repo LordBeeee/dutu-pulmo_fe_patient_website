@@ -124,7 +124,7 @@ function App() {
             <Route path="/reports/new" element={<NewReportPage />} />
             <Route path="/specialties" element={<SpecialtiesPage />} />
             <Route path="/chat-ai" element={<AIChatPage />} />
-            <Route path="/video-call" element={<VideoCallPage />} />
+            <Route path="/video-call/:appointmentId" element={<VideoCallPage />} />
           </Route>
         </Route>
       </Routes>

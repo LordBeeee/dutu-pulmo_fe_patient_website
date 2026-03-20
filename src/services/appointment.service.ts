@@ -1,4 +1,4 @@
-﻿import { api } from '@/services/api';
+import { api } from '@/services/api';
 import { cleanParams } from '@/utils/query';
 import type { Doctor } from '@/types/doctor';
 import type { AppointmentStatus } from '@/constants/appointment-status';
@@ -138,7 +138,19 @@ export const appointmentService = {
     const { data } = await api.put<AppointmentResponse>(`/appointments/${appointmentId}/cancel`, payload);
     return data;
   },
+
+  joinVideoCall: async (appointmentId: string) => {
+    const { data } = await api.post<{ url: string; token: string }>(`/appointments/${appointmentId}/video/join`);
+    return data;
+  },
+
+  leaveVideoCall: async (appointmentId: string) => {
+    const { data } = await api.post<{ success: boolean }>(`/appointments/${appointmentId}/video/leave`);
+    return data;
+  },
+
+  getVideoCallStatus: async (appointmentId: string) => {
+    const { data } = await api.get<{ canJoin: boolean; message: string }>(`/appointments/${appointmentId}/video/status`);
+    return data;
+  },
 };
-
-
-

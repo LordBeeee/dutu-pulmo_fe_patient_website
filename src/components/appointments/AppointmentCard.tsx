@@ -1,4 +1,4 @@
-﻿import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { getAppointmentStatusConfig, getAppointmentTypeLabel } from '@/constants/appointment-status';
 import type { AppointmentResponse } from '@/services/appointment.service';
@@ -72,16 +72,32 @@ function AppointmentCard({ appointment }: AppointmentCardProps) {
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={(event) => {
-          event.stopPropagation();
-          handleNavigate();
-        }}
-        className="mt-5 w-full rounded-xl border border-primary/30 py-2.5 text-primary font-semibold hover:bg-primary/5"
-      >
-        Xem chi tiết
-      </button>
+      <div className="mt-5 flex gap-3">
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            handleNavigate();
+          }}
+          className="flex-1 rounded-xl border border-slate-200 py-2.5 text-slate-700 font-semibold hover:bg-slate-50 transition-colors"
+        >
+          Xem chi tiết
+        </button>
+
+        {appointment.appointmentType === 'VIDEO' && ['CONFIRMED', 'CHECKED_IN', 'IN_PROGRESS'].includes(appointment.status) && (
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              navigate(`/video-call/${appointment.id}`);
+            }}
+            className="flex-1 rounded-xl bg-blue-600 py-2.5 text-white font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 shadow-sm"
+          >
+            <span className="material-symbols-outlined text-sm">video_call</span>
+            Vào khám
+          </button>
+        )}
+      </div>
     </article>
   );
 }

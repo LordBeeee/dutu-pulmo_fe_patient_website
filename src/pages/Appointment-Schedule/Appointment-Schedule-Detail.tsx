@@ -80,7 +80,7 @@ const AppointmentScheduleDetail: React.FC = () => {
 
   const canCancel = canCancelAppointmentByStatus(appointment?.status);
   const canJoinVideo =
-    !!appointment?.meetingUrl && ['CONFIRMED', 'CHECKED_IN', 'IN_PROGRESS'].includes(appointment.status);
+    appointment?.appointmentType === 'VIDEO' && ['CONFIRMED', 'CHECKED_IN', 'IN_PROGRESS'].includes(appointment.status);
 
   const symptomsText = !appointment?.symptoms || appointment.symptoms.length === 0 ? '---' : appointment.symptoms.join(', ');
 
@@ -205,9 +205,9 @@ const AppointmentScheduleDetail: React.FC = () => {
 
           <div className="flex items-center gap-3">
             {canJoinVideo ? (
-              <a href={appointment.meetingUrl} target="_blank" rel="noreferrer" className="px-4 py-2.5 rounded-xl border border-primary text-primary font-semibold hover:bg-primary/5">
+              <Link to={`/video-call/${appointment.id}`} className="px-4 py-2.5 rounded-xl border border-primary text-primary font-semibold hover:bg-primary/5">
                 Vào phòng khám
-              </a>
+              </Link>
             ) : null}
 
             {appointment.status === 'COMPLETED' ? (

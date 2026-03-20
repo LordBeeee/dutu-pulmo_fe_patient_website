@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { useSpecialties } from '@/hooks/useAppointments';
+import { useSpecialties } from "@/hooks/use-appointments";
 import { getSpecialtyConfig } from '@/components/home/SpecialtyConfig';
 
 export default function SpecialtiesPage() {

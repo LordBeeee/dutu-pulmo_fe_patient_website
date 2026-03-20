@@ -12,9 +12,6 @@ export default function PatientInfoCard({ user }: PatientInfoCardProps) {
           Thông tin bệnh nhân
         </h2>
 
-        <button className="text-blue-600 text-xs font-semibold hover:underline">
-          Chỉnh sửa
-        </button>
       </div>
 
       <div className="bg-white rounded-2xl p-8 card-shadow border border-slate-100 grid grid-cols-1 sm:grid-cols-3 gap-y-8 gap-x-12">

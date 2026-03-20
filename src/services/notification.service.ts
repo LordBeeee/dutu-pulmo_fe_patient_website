@@ -1,17 +1,19 @@
 import { api } from "./api";
-import type { 
-  NotificationActionResponse, 
-  NotificationListResponse, 
-  NotificationQuery, 
-  NotificationUnreadCountResponse 
+import type {
+  NotificationActionResponse,
+  NotificationListResponse,
+  NotificationQuery,
+  NotificationUnreadCountResponse,
 } from "@/types/notification";
 
 export const notificationService = {
   /**
    * Lấy danh sách thông báo của người dùng
    */
-  getNotifications: async (query?: NotificationQuery): Promise<NotificationListResponse> => {
-    const response = await api.get<NotificationListResponse>('/notifications', {
+  getNotifications: async (
+    query?: NotificationQuery,
+  ): Promise<NotificationListResponse> => {
+    const response = await api.get<NotificationListResponse>("/notifications", {
       params: query,
     });
     return response.data;
@@ -21,7 +23,9 @@ export const notificationService = {
    * Lấy số lượng thông báo chưa đọc
    */
   getUnreadCount: async (): Promise<number> => {
-    const response = await api.get<NotificationUnreadCountResponse>('/notifications/unread-count');
+    const response = await api.get<NotificationUnreadCountResponse>(
+      "/notifications/unread-count",
+    );
     return response.data.count;
   },
 
@@ -29,7 +33,9 @@ export const notificationService = {
    * Đánh dấu tất cả thông báo là đã đọc
    */
   markAllAsRead: async (): Promise<NotificationActionResponse> => {
-    const response = await api.patch<NotificationActionResponse>('/notifications/read-all');
+    const response = await api.patch<NotificationActionResponse>(
+      "/notifications/read-all",
+    );
     return response.data;
   },
 
@@ -37,7 +43,9 @@ export const notificationService = {
    * Đánh dấu một thông báo là đã đọc
    */
   markAsRead: async (id: string): Promise<NotificationActionResponse> => {
-    const response = await api.patch<NotificationActionResponse>(`/notifications/${id}/read`);
+    const response = await api.patch<NotificationActionResponse>(
+      `/notifications/${id}/read`,
+    );
     return response.data;
   },
 };

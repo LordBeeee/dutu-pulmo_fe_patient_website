@@ -1,11 +1,11 @@
-﻿import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import NewsCard from '@/components/home/NewsCard';
 import PromoBanner from '@/components/home/PromoBanner';
 import QuickActions, { type QuickAction } from '@/components/home/QuickActions';
 import SpecialtyGrid from '@/components/home/SpecialtyGrid';
 import { SAMPLE_NEWS } from '@/constants/news-data';
-import { usePublicDoctors, useSpecialties } from '@/hooks/useAppointments';
+import { usePublicDoctors, useSpecialties } from '@/hooks/use-appointments';
 import { useHospitals } from '@/hooks/useHospitals';
 
 function Home() {
