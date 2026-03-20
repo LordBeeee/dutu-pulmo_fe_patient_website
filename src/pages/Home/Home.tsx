@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import NewsCard from '@/components/home/NewsCard';
+import PendingPaymentBanner from '@/components/appointments/PendingPaymentBanner';
 import PromoBanner from '@/components/home/PromoBanner';
 import QuickActions, { type QuickAction } from '@/components/home/QuickActions';
 import SpecialtyGrid from '@/components/home/SpecialtyGrid';
@@ -86,6 +87,7 @@ function Home() {
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+      <PendingPaymentBanner />
       <PromoBanner />
       <QuickActions actions={quickActions} />
 

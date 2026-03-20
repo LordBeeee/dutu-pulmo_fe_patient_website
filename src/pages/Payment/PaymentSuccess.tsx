@@ -1,25 +1,3 @@
-import { useEffect } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
-import type { Doctor } from "../../types/doctor";
-import type { UserProfile } from "../../types/user";
-import type { TimeSlot } from "../../components/appointment/TimeSlotSection";
-
-interface AppointmentResponse {
-  id: string;
-  appointmentCode?: string;
-  qrCode?: string;
-  status?: string;
-}
-
-interface PaymentSuccessState {
-  appointment?: AppointmentResponse;
-  doctor: Doctor;
-  user: UserProfile;
-  selectedDate: string;
-  selectedSlot: TimeSlot;
-}
-
 function formatDateTimeNow() {
   return new Intl.DateTimeFormat("vi-VN", {
     hour: "2-digit",
@@ -68,66 +46,35 @@ function formatGender(gender?: string) {
   return gender;
 }
 
-function formatVietnamTime(dateString?: string) {
-  if (!dateString) return "--";
-  return new Intl.DateTimeFormat("vi-VN", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "Asia/Ho_Chi_Minh",
-  }).format(new Date(dateString));
-}
-
-function getDoctorName(doctor?: Doctor) {
-  if (!doctor) return "--";
-  return doctor.fullName || "--";
-}
-
-function getDoctorAvatar(doctor?: Doctor) {
+function getDoctorAvatar(doctor?: any) {
   return (
     doctor?.avatarUrl ||
     "https://via.placeholder.com/150?text=Doctor"
   );
 }
 
-function getPatientPhone(user?: UserProfile) {
-  return user?.phone || "--";
-}
-
-function getPatientName(user?: UserProfile) {
-  return user?.fullName || "--";
-}
-
-function getPatientDob(user?: UserProfile) {
-  return user?.dateOfBirth || undefined;
-}
-
-function getPatientGender(user?: UserProfile) {
-  return user?.gender || "--";
-}
-
-function getAppointmentCode(appointment?: AppointmentResponse) {
-  return appointment?.appointmentCode || appointment?.id || "--";
-}
+import { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
+import { useAppointmentDetail } from "../../hooks/use-appointments";
 
 export default function PaymentSuccess() {
-  const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-//   const state = location.state as PaymentSuccessState | null;
-  const savedState = localStorage.getItem("payment_success_context");
-
-  const state =
-  (location.state as PaymentSuccessState | null) ||
-  (savedState ? (JSON.parse(savedState) as PaymentSuccessState) : null);
   const code = searchParams.get("code");
   const status = searchParams.get("status");
   const cancel = searchParams.get("cancel");
   const paymentId = searchParams.get("id");
-  const orderCode = searchParams.get("orderCode");
 
-  const appointmentIdFromUrl = searchParams.get("appointmentId");
+  // Priority: URL Param > LocalStorage
+  const appointmentId =
+    searchParams.get("appointmentId") ||
+    localStorage.getItem("currentAppointmentId") ||
+    "";
+
+  const appointmentQuery = useAppointmentDetail(appointmentId);
+  const appointment = appointmentQuery.data;
 
   useEffect(() => {
     // Clear context after reading to prevent stale data on future visits
@@ -140,7 +87,25 @@ export default function PaymentSuccess() {
   const isCancelled = cancel === "true" || status === "CANCELLED";
   const isFailed = !isPaid && !isCancelled && code !== null;
 
-  if (!state) {
+  // Loading state
+  if (appointmentQuery.isLoading) {
+    return (
+      <main className="flex-grow flex items-center justify-center p-6 md:p-12">
+        <div className="max-w-xl w-full bg-white rounded-2xl border border-slate-200 p-8 text-center space-y-4">
+          <div className="w-20 h-20 bg-slate-100 rounded-full animate-pulse mx-auto" />
+          <div className="h-8 bg-slate-100 rounded animate-pulse w-3/4 mx-auto" />
+          <div className="h-4 bg-slate-100 rounded animate-pulse w-1/2 mx-auto" />
+          <div className="space-y-2 pt-4">
+            <div className="h-12 bg-slate-100 rounded animate-pulse" />
+            <div className="h-12 bg-slate-100 rounded animate-pulse" />
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // Error/Missing data state
+  if (appointmentQuery.isError || !appointment) {
     return (
       <main className="flex-grow flex items-center justify-center p-6 md:p-12">
         <div className="max-w-xl w-full bg-white rounded-2xl border border-slate-200 p-8 text-center">
@@ -169,26 +134,18 @@ export default function PaymentSuccess() {
 
           <div className="bg-slate-50 rounded-xl p-4 text-left space-y-3 mb-6">
             <div className="flex justify-between">
-              <span className="text-slate-500">Payment ID</span>
+              <span className="text-slate-500">Mã giao dịch</span>
               <span className="font-medium">{paymentId || "--"}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500">
-                {appointmentIdFromUrl ? "Appointment ID" : "Order code"}
-              </span>
-              <span className="font-medium">
-                {appointmentIdFromUrl || orderCode || "--"}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">Status</span>
-              <span className="font-medium">{status || "--"}</span>
+              <span className="text-slate-500">Trạng thái</span>
+              <span className="font-medium">{status || (isPaid ? "Thành công" : isFailed ? "Thất bại" : "Đã hủy")}</span>
             </div>
           </div>
 
           <button
             onClick={() => navigate("/")}
-            className="bg-primary text-white py-3 px-6 rounded-xl font-bold"
+            className="bg-primary text-white py-3 px-6 rounded-xl font-bold hover:opacity-90 transition-opacity"
           >
             Về trang chủ
           </button>
@@ -197,22 +154,24 @@ export default function PaymentSuccess() {
     );
   }
 
-  const { appointment, doctor, user, selectedDate, selectedSlot } = state;
+  // Success path with appointment data
+  const doctor = appointment.doctor;
+  const userInner = appointment.patient?.user;
 
-  const doctorName = getDoctorName(doctor);
-  const doctorAvatar = getDoctorAvatar(doctor);
-  const patientName = getPatientName(user);
-  const patientPhone = getPatientPhone(user);
-  const patientDob = formatBirthDate(getPatientDob(user));
-  const patientGender = formatGender(getPatientGender(user));
-  const appointmentCode = getAppointmentCode(appointment);
-  const appointmentDate = formatAppointmentDate(selectedDate);
-  const slotTime = `${formatVietnamTime(selectedSlot?.startTime)} - ${formatVietnamTime(
-    selectedSlot?.endTime
-  )}`;
+  const doctorName = doctor?.fullName || "Bác sĩ Duy Tu";
+  const doctorAvatar = getDoctorAvatar(doctor as any);
+  const patientName = userInner?.fullName || "--";
+  const patientPhone = userInner?.phone || "--";
+  const patientDob = formatBirthDate(userInner?.dateOfBirth);
+  const patientGender = formatGender(userInner?.gender);
+
+  const appointmentCode = appointment.appointmentNumber || appointment.id;
+  const appointmentDate = formatAppointmentDate(appointment.scheduledAt);
+  const slotTime = appointment.scheduledAt 
+    ? `${new Date(appointment.scheduledAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}` 
+    : "--";
 
   const qrImage =
-    appointment?.qrCode ||
     "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" +
       encodeURIComponent(appointmentCode);
 
@@ -351,17 +310,6 @@ export default function PaymentSuccess() {
                       {status || (isPaid ? "PAID" : isCancelled ? "CANCELLED" : isFailed ? "FAILED" : "--")}
                     </span>
                   </div>
-
-                  {appointmentIdFromUrl || orderCode ? (
-                    <div>
-                      <p className="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mb-1">
-                        {appointmentIdFromUrl ? "Appointment ID" : "Order code"}
-                      </p>
-                      <span className="font-semibold text-slate-700 dark:text-slate-200">
-                        {appointmentIdFromUrl || orderCode}
-                      </span>
-                    </div>
-                  ) : null}
                 </div>
               </div>
 

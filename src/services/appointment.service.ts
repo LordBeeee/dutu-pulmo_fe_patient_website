@@ -92,7 +92,9 @@ export type AppointmentResponse = {
   symptoms?: string[];
   durationMinutes?: number;
   sourceType?: string;
+  patientRating?: number;
 };
+
 
 export type AppointmentListResponse = {
   items: AppointmentResponse[];
