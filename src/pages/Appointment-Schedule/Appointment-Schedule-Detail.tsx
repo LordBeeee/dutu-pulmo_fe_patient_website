@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import CancelAppointmentModal from '@/components/appointments/CancelAppointmentModal';
@@ -9,6 +9,7 @@ import {
   PATIENT_CANCEL_BEFORE_MINUTES,
 } from '@/constants/appointment-status';
 import { useAppointmentDetail, useCancelAppointment } from '@/hooks/use-appointments';
+import { useMyReviews } from '@/hooks/use-reviews';
 
 function formatDate(date?: string) {
   if (!date) return '---';
@@ -68,10 +69,18 @@ function renderPatientNotes(notes?: string) {
 }
 
 const AppointmentScheduleDetail: React.FC = () => {
+  const reviewsQuery = useMyReviews();
   const navigate = useNavigate();
   const { id } = useParams();
 
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [now, setNow] = useState<number>(0);
+
+  useEffect(() => {
+    setNow(Date.now());
+    const interval = setInterval(() => setNow(Date.now()), 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   const appointmentQuery = useAppointmentDetail(id);
   const cancelAppointmentMutation = useCancelAppointment();
@@ -79,10 +88,12 @@ const AppointmentScheduleDetail: React.FC = () => {
   const appointment = appointmentQuery.data ?? null;
   const statusConfig = getAppointmentStatusConfig(appointment?.status);
 
-  const canCancel = canCancelAppointment(appointment?.status, appointment?.scheduledAt);
+  const canCancel = canCancelAppointment(appointment?.status);
+
+  const hasReviewedThisAppointment = reviewsQuery.data?.some((r) => r.appointmentId === appointment?.id);
 
   // minutesUntilStart handles warning UI logic
-  const minutesUntilStart = (new Date(appointment?.scheduledAt || '').getTime() - Date.now()) / (1000 * 60);
+  const minutesUntilStart = (new Date(appointment?.scheduledAt || '').getTime() - now) / (1000 * 60);
   const isConfirmed = appointment?.status === 'CONFIRMED';
   const isCancelled = appointment?.status === 'CANCELLED';
 
@@ -95,7 +106,9 @@ const AppointmentScheduleDetail: React.FC = () => {
   const minutesUntilDeadline = Math.floor((minutesUntilStart - PATIENT_CANCEL_BEFORE_MINUTES) % 60);
 
   const canJoinVideo =
-    appointment?.appointmentType === 'VIDEO' && ['CONFIRMED', 'CHECKED_IN', 'IN_PROGRESS'].includes(appointment.status);
+    appointment?.appointmentType === 'VIDEO' &&
+    appointment.status &&
+    ['CONFIRMED', 'CHECKED_IN', 'IN_PROGRESS'].includes(appointment.status);
 
   const symptomsText = !appointment?.symptoms || appointment.symptoms.length === 0 ? '---' : appointment.symptoms.join(', ');
 
@@ -262,13 +275,20 @@ const AppointmentScheduleDetail: React.FC = () => {
               ) : null}
 
               {appointment.status === 'COMPLETED' ? (
-                <Link
-                  to={`/appointments/review?appointmentId=${appointment.id}`}
-                  className="px-4 py-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 font-semibold hover:bg-amber-100 flex items-center justify-center gap-2 transition-all whitespace-nowrap w-full sm:w-auto"
-                >
-                  <span className="material-symbols-outlined text-sm">star</span>
-                  <span>Đánh giá dịch vụ</span>
-                </Link>
+                hasReviewedThisAppointment ? (
+                  <span className="px-4 py-2.5 rounded-xl bg-slate-50 text-slate-400 border border-slate-200 font-semibold flex items-center justify-center gap-2 whitespace-nowrap w-full sm:w-auto">
+                    <span className="material-symbols-outlined text-sm text-slate-300">verified</span>
+                    <span>Đã đánh giá</span>
+                  </span>
+                ) : (
+                  <Link
+                    to={`/appointments/review?appointmentId=${appointment.id}`}
+                    className="px-4 py-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 font-semibold hover:bg-amber-100 flex items-center justify-center gap-2 transition-all whitespace-nowrap w-full sm:w-auto"
+                  >
+                    <span className="material-symbols-outlined text-sm">star</span>
+                    <span>Đánh giá dịch vụ</span>
+                  </Link>
+                )
               ) : null}
 
               {canCancel ? (

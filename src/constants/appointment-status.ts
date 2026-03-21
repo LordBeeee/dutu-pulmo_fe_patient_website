@@ -135,19 +135,10 @@ export function getAppointmentTypeLabel(type?: string): string {
 
 export const PATIENT_CANCEL_BEFORE_MINUTES = 4 * 60;
 
-export function canCancelAppointment(
-  status?: string,
-  scheduledAt?: string,
-): boolean {
+export function canCancelAppointment(status?: string): boolean {
   if (!status) return false;
 
   if (["PENDING", "PENDING_PAYMENT"].includes(status)) return true;
-
-  if (status === "CONFIRMED" && scheduledAt) {
-    const minutesUntilStart =
-      (new Date(scheduledAt).getTime() - Date.now()) / (1000 * 60);
-    return minutesUntilStart >= PATIENT_CANCEL_BEFORE_MINUTES;
-  }
 
   return false;
 }
