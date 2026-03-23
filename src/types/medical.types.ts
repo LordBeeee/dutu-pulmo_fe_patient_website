@@ -5,6 +5,14 @@ export type MedicalRecordStatus = 'DRAFT' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCE
 
 export type PrescriptionStatus = 'PENDING' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'EXPIRED';
 
+export interface LinkRecordInfo {
+  id: string;
+  recordNumber: string;
+  createdAt: string | Date;
+  doctorName?: string;
+  recordType?: string;
+}
+
 export interface Patient {
   id: string;
   profileCode?: string;
@@ -90,6 +98,10 @@ export interface MedicalRecord {
   dischargeCondition?: string;
   fullRecordSummary?: string;
   screeningRequests?: ScreeningRequest[];
+
+  // Medical Record Chain
+  previousRecordId?: string;
+  previousRecord?: LinkRecordInfo;
 }
 
 export interface Prescription {

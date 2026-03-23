@@ -185,6 +185,51 @@ export default function MedicalRecordDetailPage() {
         </div>
       </div>
 
+      {/* ── TÍNH LIÊN TỤC CỦA HỒ SƠ ── */}
+      {record.previousRecord && (
+        <section className="bg-blue-50/50 rounded-2xl border border-blue-100 p-6 mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="material-symbols-outlined text-blue-600">history</span>
+            <h2 className="font-bold text-blue-900">Liên kết hồ sơ (Tiền sử gần nhất)</h2>
+          </div>
+          <Link 
+            to={`/medical-records/${record.previousRecord.id}`}
+            className="block bg-white rounded-xl border border-blue-200 p-4 hover:border-blue-400 transition-all hover:shadow-sm group"
+          >
+            <div className="flex justify-between items-start mb-3">
+              <span className="inline-block px-2 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-lg">
+                #{record.previousRecord.recordNumber}
+              </span>
+              <span className="text-xs text-slate-500 italic">
+                {record.previousRecord.recordType}
+              </span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center gap-2 text-sm">
+                <span className="material-symbols-outlined text-slate-400 text-lg">calendar_today</span>
+                <span className="text-slate-500">Ngày khám:</span>
+                <span className="font-semibold text-slate-900">
+                  {format(new Date(record.previousRecord.createdAt), 'dd/MM/yyyy')}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <span className="material-symbols-outlined text-slate-400 text-lg">person</span>
+                <span className="text-slate-500">Bác sĩ:</span>
+                <span className="font-semibold text-slate-900">
+                  {record.previousRecord.doctorName || '—'}
+                </span>
+              </div>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-50 flex justify-end">
+              <span className="text-blue-600 text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all">
+                Xem chi tiết hồ sơ này
+                <span className="material-symbols-outlined text-xs">arrow_forward</span>
+              </span>
+            </div>
+          </Link>
+        </section>
+      )}
+
       {/* Detailed Info */}
       <div className="grid grid-cols-1 gap-6">
         {/* ── CHỈ SỐ SINH HIỆU ── */}
