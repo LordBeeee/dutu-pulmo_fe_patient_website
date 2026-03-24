@@ -1,18 +1,23 @@
-﻿import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { locationService } from '@/services/location.service';
-import { profileService, type UpdateProfilePayload } from '@/services/profile.service';
-import { useAuthStore } from '@/store/auth.store';
+import { locationService } from "@/services/location.service";
+import {
+  profileService,
+  type UpdateProfilePayload,
+} from "@/services/profile.service";
+import { useAuthStore } from "@/store/auth.store";
 
 export const profileKeys = {
-  me: ['profile', 'me'] as const,
-  patient: ['profile', 'patient'] as const,
-  countries: ['profile', 'countries'] as const,
-  ethnicities: ['profile', 'ethnicities'] as const,
-  occupations: (keyword?: string) => ['profile', 'occupations', keyword || ''] as const,
-  occupationDetail: (code: string) => ['profile', 'occupation', code] as const,
-  provinces: ['profile', 'provinces'] as const,
-  wards: (provinceCode?: string) => ['profile', 'wards', provinceCode || ''] as const,
+  me: ["profile", "me"] as const,
+  patient: ["profile", "patient"] as const,
+  countries: ["profile", "countries"] as const,
+  ethnicities: ["profile", "ethnicities"] as const,
+  occupations: (keyword?: string) =>
+    ["profile", "occupations", keyword || ""] as const,
+  occupationDetail: (code: string) => ["profile", "occupation", code] as const,
+  provinces: ["profile", "provinces"] as const,
+  wards: (provinceCode?: string) =>
+    ["profile", "wards", provinceCode || ""] as const,
 };
 
 export function useProfile() {
@@ -52,8 +57,8 @@ export function useOccupations(keyword?: string) {
 
 export function useOccupationDetail(code?: string) {
   return useQuery({
-    queryKey: profileKeys.occupationDetail(code || ''),
-    queryFn: () => profileService.getOccupationByCode(code || ''),
+    queryKey: profileKeys.occupationDetail(code || ""),
+    queryFn: () => profileService.getOccupationByCode(code || ""),
     enabled: Boolean(code),
   });
 }
@@ -68,7 +73,7 @@ export function useProvinces() {
 export function useWards(provinceCode?: string) {
   return useQuery({
     queryKey: profileKeys.wards(provinceCode),
-    queryFn: () => locationService.getProvinceWards(provinceCode || ''),
+    queryFn: () => locationService.getProvinceWards(provinceCode || ""),
     enabled: Boolean(provinceCode),
   });
 }
@@ -78,8 +83,13 @@ export function useUpdateMyUser() {
   const setUser = useAuthStore((state) => state.setUser);
 
   return useMutation({
-    mutationFn: ({ userId, payload }: { userId: string; payload: UpdateProfilePayload }) =>
-      profileService.updateUser(userId, payload),
+    mutationFn: ({
+      userId,
+      payload,
+    }: {
+      userId: string;
+      payload: UpdateProfilePayload;
+    }) => profileService.updateUser(userId, payload),
     onSuccess: (user) => {
       setUser(user);
       void queryClient.invalidateQueries({ queryKey: profileKeys.me });
@@ -95,12 +105,13 @@ export function useUploadAvatar() {
   return useMutation({
     mutationFn: (file: File) => profileService.uploadAvatar(file),
     onSuccess: (result) => {
+      console.log("result", result);
       const currentUser = useAuthStore.getState().user;
+      queryClient.invalidateQueries({ queryKey: profileKeys.me });
+      queryClient.invalidateQueries({ queryKey: profileKeys.patient });
       if (currentUser) {
-        setUser({ ...currentUser, avatarUrl: result.url });
+        setUser({ ...currentUser, avatarUrl: result.upload.url });
       }
-      void queryClient.invalidateQueries({ queryKey: profileKeys.me });
     },
   });
 }
-
