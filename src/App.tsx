@@ -29,6 +29,7 @@ import NewsPage from '@/pages/News/News'
 import NewsDetail from '@/pages/News/NewsDetail'
 import NotificationsPage from '@/pages/Notifications/Notifications'
 import PaymentSuccess from '@/pages/Payment/PaymentSuccess'
+import PaymentCancel from '@/pages/Payment/PaymentCancel'
 import PaymentPage from '@/pages/Payment/Payment'
 import PrescriptionDetailPage from '@/pages/Prescriptions/Prescription-detail'
 import PrescriptionsPage from '@/pages/Prescriptions/Prescriptions'
@@ -111,6 +112,7 @@ function App() {
             <Route path="/appointment-success" element={<AppointmentSuccess />} />
             <Route path="/payment/success" element={<PaymentSuccess />} />
             <Route path="/payment/return" element={<PaymentSuccess />} />
+            <Route path="/payment/cancel" element={<PaymentCancel />} />
             <Route path="/appointment-schedule" element={<AppointmentSchedule />} />
             <Route path="/appointment-schedule/:id" element={<AppointmentScheduleDetail />} />
             <Route path="/doctor" element={<Doctor />} />

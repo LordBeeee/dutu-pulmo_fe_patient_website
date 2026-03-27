@@ -120,10 +120,11 @@ export function ProfileSidebar() {
                     <li key={item.to}>
                       <Link
                         to={item.to}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${isActive(item.to)
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${
+                          isActive(item.to)
                             ? "bg-primary/10 text-primary"
                             : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
-                          }`}
+                        }`}
                       >
                         <span className="material-symbols-outlined text-[20px]">
                           {item.icon}

@@ -386,7 +386,7 @@ export default function PaymentSuccess() {
             <div className="mt-10 text-center">
               <button
                 type="button"
-                onClick={() => navigate("/appointment-schedule")}
+                onClick={() => navigate(`/appointment-schedule/${appointmentId}`)}
                 className="text-primary font-semibold text-sm hover:underline underline-offset-4 decoration-2"
               >
                 Xem chi tiết lịch khám
