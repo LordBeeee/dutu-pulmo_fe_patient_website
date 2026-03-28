@@ -173,6 +173,21 @@ const AppointmentScheduleDetail: React.FC = () => {
         </div>
 
         <div className="p-6 space-y-6">
+          <section className="flex flex-col items-center justify-center p-6 mb-8 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
+            <h2 className="text-sm font-bold text-slate-500 mb-4 uppercase tracking-wider text-center">Mã QR Check-in</h2>
+            <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 mb-4">
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(appointment.appointmentNumber || appointment.id)}`}
+                alt="QR Code"
+                className="w-40 h-40"
+              />
+            </div>
+            <p className="text-xl font-bold text-primary">#{appointment.appointmentNumber || appointment.id}</p>
+            <p className="text-xs text-slate-400 mt-2 text-center max-w-xs leading-relaxed">
+              Vui lòng đưa mã này cho lễ tân khi đến phòng khám để check-in nhanh chóng.
+            </p>
+          </section>
+
           <section>
             <h2 className="text-lg font-bold text-slate-900 mb-3">Thông tin lịch hẹn</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-3 text-sm">
