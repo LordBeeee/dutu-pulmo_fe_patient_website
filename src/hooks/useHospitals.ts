@@ -21,7 +21,6 @@ export function useHospitals(params?: HospitalQueryDto) {
   });
 }
 
-
 export function useHospitalDetail(id: string) {
   return useQuery({
     queryKey: hospitalKeys.detail(id),

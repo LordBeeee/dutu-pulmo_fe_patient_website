@@ -12,7 +12,6 @@ import {
   type PublicDoctorQuery,
 } from "@/services/appointment.service";
 
-
 export const appointmentKeys = {
   myList: (params?: AppointmentListQuery) =>
     ["appointments", "my-patient", params] as const,

@@ -7,4 +7,3 @@ export function useChangePassword() {
     mutationFn: (payload: ChangePasswordDto) => authService.changePassword(payload),
   });
 }
-

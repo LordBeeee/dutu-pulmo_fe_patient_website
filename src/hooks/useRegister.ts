@@ -8,4 +8,3 @@ export function useRegister() {
     mutationFn: (payload: RegisterDto) => authService.register(payload),
   });
 }
-

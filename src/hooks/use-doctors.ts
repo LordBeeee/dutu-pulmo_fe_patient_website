@@ -13,7 +13,6 @@ export const doctorKeys = {
     ['doctors', 'slot-summary', doctorId, from, to, appointmentType] as const,
 };
 
-
 export function useDoctors(page: number, filters: DoctorFilters) {
   return useQuery({
     queryKey: doctorKeys.list(page, filters),

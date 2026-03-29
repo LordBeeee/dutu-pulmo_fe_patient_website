@@ -8,4 +8,3 @@ export function useVerifyOtp() {
     mutationFn: (payload: VerifyOtpDto) => authService.verifyOtp(payload),
   });
 }
-

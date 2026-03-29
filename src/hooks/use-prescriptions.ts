@@ -13,7 +13,6 @@ export const usePrescriptions = () => {
   });
 };
 
-
 export const usePrescriptionDetail = (prescriptionId?: string) => {
   return useQuery({
     queryKey: ['prescription', prescriptionId],
