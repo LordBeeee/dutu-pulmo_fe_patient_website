@@ -1,16 +1,17 @@
-import { useState } from "react";
-import { register } from "../../services/auth.service";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+﻿import { useState } from 'react';
+import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+import { useRegister } from '@/hooks/useRegister';
 
 function Register() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showconfirmPassword, setConfirmShowPassword] = useState(false);
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{
     fullName?: string;
@@ -20,28 +21,29 @@ function Register() {
     terms?: string;
   }>({});
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [success, setSuccess] = useState("");
+  const [success, setSuccess] = useState('');
+  const registerMutation = useRegister();
 
   const handleRegister = async () => {
     const newErrors: typeof errors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!fullName.trim()) {
-      newErrors.fullName = "Vui lòng nhập họ tên";
+      newErrors.fullName = 'Vui lòng nhập họ tên';
     } else if (fullName.trim().length < 2) {
-      newErrors.fullName = "Họ tên phải có ít nhất 2 ký tự";
+      newErrors.fullName = 'Họ tên phải có ít nhất 2 ký tự';
     }
 
     if (!email.trim()) {
-      newErrors.email = "Vui lòng nhập email";
+      newErrors.email = 'Vui lòng nhập email';
     } else if (!emailRegex.test(email)) {
-      newErrors.email = "Email không đúng định dạng";
+      newErrors.email = 'Email không đúng định dạng';
     }
 
     if (!password) {
-      newErrors.password = "Vui lòng nhập mật khẩu";
+      newErrors.password = 'Vui lòng nhập mật khẩu';
     } else if (password.length < 8) {
-      newErrors.password = "Mật khẩu phải có ít nhất 8 ký tự";
+      newErrors.password = 'Mật khẩu phải có ít nhất 8 ký tự';
     } else if (
       !/[A-Z]/.test(password) ||
       !/[a-z]/.test(password) ||
@@ -49,16 +51,17 @@ function Register() {
       !/[!@#$%^&*(),.?":{}|<>]/.test(password)
     ) {
       newErrors.password =
-        "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường và 1 số và ký tự đặc biệt";
+        'Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường và 1 số và ký tự đặc biệt';
     } else if (password.length > 128) {
-      newErrors.password = "Mật khẩu không quá 128 ký tự";
+      newErrors.password = 'Mật khẩu không quá 128 ký tự';
     }
 
     if (password !== confirmPassword) {
-      newErrors.confirmPassword = "Mật khẩu xác nhận không khớp";
+      newErrors.confirmPassword = 'Mật khẩu xác nhận không khớp';
     }
+
     if (!acceptTerms) {
-      newErrors.terms = "Bạn phải đồng ý với Điều khoản & Quy định";
+      newErrors.terms = 'Bạn phải đồng ý với Điều khoản & Quy định';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -69,40 +72,29 @@ function Register() {
     try {
       setLoading(true);
       setErrors({});
-      setSuccess("");
+      setSuccess('');
 
-      await register(email, password, fullName);
+      await registerMutation.mutateAsync({ email, password, fullName });
 
-      // chuyển sang trang OTP và mang theo email
-      navigate("/verify-OTP", { state: { email } });
-
+      navigate('/verify-otp', { state: { email, mode: 'verify' } });
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        // setErrors({
-        //   email: "Email đã tồn tại",
-        // });
-        const status = err.response?.status;
-        const message = err.response?.data?.message;
+      const error = err as AxiosError<{ message?: string }>;
+      const status = error.response?.status;
+      const message = error.response?.data?.message;
 
-        if (status === 409) {
-          setErrors({ email: "Email đã tồn tại" });
-        } else if (status === 400) {
-          setErrors({ confirmPassword: message || "Dữ liệu không hợp lệ" });
-        } else if (status === 500) {
-          setErrors({ confirmPassword: "Hệ thống đang lỗi, vui lòng thử lại sau" });
-        } else {
-          setErrors({ confirmPassword: message || "Đăng ký thất bại" });
-        }
+      if (status === 409) {
+        setErrors({ email: 'Email đã tồn tại' });
+      } else if (status === 400) {
+        setErrors({ confirmPassword: message || 'Dữ liệu không hợp lệ' });
+      } else if (status === 500) {
+        setErrors({ confirmPassword: 'Hệ thống đang lỗi, vui lòng thử lại sau' });
       } else {
-        // setErrors({ email: "Đăng ký thất bại" });
-        setErrors({ confirmPassword: "Có lỗi xảy ra, vui lòng thử lại" });
+        setErrors({ confirmPassword: message || 'Đăng ký thất bại' });
       }
     } finally {
       setLoading(false);
     }
   };
-
-
   return (
     <div className="bg-background-light dark:bg-background-dark min-h-screen transition-colors duration-300">
 
@@ -360,3 +352,4 @@ function Register() {
 }
 
 export default Register
+
